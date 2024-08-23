@@ -175,15 +175,12 @@
         reset();
         toDisplay();
       }
-      // Remove the task from both arrays
       toDo.name.splice(index, 1);
       toDo.date.splice(index, 1);
 
-      // Update localStorage with the new arrays
       localStorage.setItem("name", JSON.stringify(toDo.name));
       localStorage.setItem("date", JSON.stringify(toDo.date));
 
-      // Re-display the updated list of tasks
       toDisplay();
     }
 
