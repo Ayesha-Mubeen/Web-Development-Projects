@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+        body{
+            background-color: rgb(71, 30, 109);
+            
+        }
+      .Add-button {
+        background-color: green;
+        color: white;
+        border: none;
+        width: 90px;
+        height: 34px;
+        margin-left: 5px;
+        cursor: pointer;
+        border-radius: 10px;
+        font-family: cursive;
+      }
+      .Reset-btn {
+        background-color: darkblue;
+        color: white;
+        border: none;
+        width: 90px;
+        height: 34px;
+        margin-left: 5px;
+        cursor: pointer;
+        border-radius: 10px;
+        font-family: cursive;
+      }
+      .Delete-btn {
+        background-color: darkred;
+        color: white;
+        border: none;
+        width: 90px;
+        height: 34px;
+        cursor: pointer;
+        border-radius: 10px;
+        font-family: cursive;
+      }
+      .ListOfTask {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 10px;
+        justify-content: start;
+        align-items: center;
+        gap: 20px;
+      }
+      .upper {
+        margin-bottom: 10px;
+      }
+      #ToDoTasks {
+        width: 200px;
+        height: 30px;
+        margin-right: 20px;
+      }
+      .Entry {
+        width: 200px;
+        margin-right: 10px;
+        word-wrap: break-word;
+      }
+      .main {
+        height: 30px;
+      }
+      .maindiv {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .secondMain {
+        display: flex;
+        min-height: 97vh;
+        background-color: rgb(140, 107, 201);
+        width: 600px;
+        border-radius: 20px;
+        justify-content: center;
+      }
+      .firstPara , .Entry , .Date{
+        color: white;
+        font-family: cursive;
+      }
+      .firstPara{
+        background-color: rgb(71, 30, 109);
+        display: inline-block;
+        padding: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        border-radius: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="maindiv">
+      <div class="secondMain">
+        <div>
+          <h1 class="firstPara">To do list</h1>
+          <div class="upper">
+            <input
+              type="text"
+              name=""
+              id="ToDoTasks"
+              class="main"
+              placeholder="Add tasks"
+              onkeydown="if(event.key === 'Enter'){toAddTasks();}"
+            />
+            <input type="date" class="Due-Date main" />
+            <button class="Add-button" onclick="toAddTasks();">Add</button>
+            <div class="ResetButton main" style="display: inline"></div>
+          </div>
+          <div class="ListOfTasks"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    let toDo = {
+      name: JSON.parse(localStorage.getItem("name")) || [],
+      date: JSON.parse(localStorage.getItem("date")) || [],
+    };
+    if (toDo.name.length > 0 || toDo.date.length > 0) {
+      addReset();
+      toDisplay();
+    }
+    function toAddTasks() {
+      var input = document.querySelector("#ToDoTasks");
+      var inputValue = input.value;
+      var input1 = document.querySelector(".Due-Date");
+      var inputValue1 = input1.value;
+
+      if (inputValue === "") {
+        alert("Task cannot be blank.");
+      } else {
+        if (inputValue1 === "") {
+          alert("Select Date.");
+        } else {
+          toDo.name.push(inputValue);
+          input.value = "";
+          toDo.date.push(inputValue1);
+          input1.value = "";
+
+          localStorage.setItem("name", JSON.stringify(toDo.name));
+          localStorage.setItem("date", JSON.stringify(toDo.date));
+          toDisplay();
+          addReset();
+        }
+      }
+    }
+    function addReset() {
+      document.querySelector(".ResetButton").innerHTML =
+        '<button class="Reset-btn" onclick=" reset(); toDisplay();"> Reset All </button>';
+    }
+    function toDisplay() {
+      let ToDoInnerHTML = "";
+
+      for (var i = 0; i < toDo.name.length; i++) {
+        ToDoInnerHTML += `<div class="ListOfTask">
+            <div class="Tasks Entry"><p>Task: ${toDo.name[i]}</p></div> 
+            <div class="Tasks Date"><p>Due Date: ${toDo.date[i]}<p></div>
+            <div class="Tasks">
+              <button class="Delete-btn" onclick="deleteTask(${i});"> Delete </button>
+            </div> 
+          </div>`;
+      }
+
+      var input = document.querySelector(".ListOfTasks");
+      input.innerHTML = ToDoInnerHTML;
+    }
+    function deleteTask(index) {
+      if (toDo.name.length === 1) {
+        reset();
+        toDisplay();
+      }
+      // Remove the task from both arrays
+      toDo.name.splice(index, 1);
+      toDo.date.splice(index, 1);
+
+      // Update localStorage with the new arrays
+      localStorage.setItem("name", JSON.stringify(toDo.name));
+      localStorage.setItem("date", JSON.stringify(toDo.date));
+
+      // Re-display the updated list of tasks
+      toDisplay();
+    }
+
+    function reset() {
+      document.querySelector(".ResetButton").innerHTML = "";
+      toDo.name.splice(0, toDo.name.length);
+      toDo.date.splice(0, toDo.date.length);
+      localStorage.removeItem("name");
+      localStorage.removeItem("date");
+    }
+  </script>
+</html>
